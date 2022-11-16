@@ -4,7 +4,8 @@ import appointment from '../../../assets/images/appointment.png'
 const Contact = () => {
     return (
         <section className='mt-20 py-12' style={{
-            background: `url(${appointment})`
+            background: `url(${appointment})`,
+            backgroundSize: "contain bg-no-repeat",
         }}>
             <div className="hero">
                 <div className="hero-content flex-col lg:flex-row">

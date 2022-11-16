@@ -5,7 +5,8 @@ import appointment from '../../../assets/images/appointment.png'
 const MakeAppointment = () => {
     return (
         <section className='mt-20' style={{
-            background: `url(${appointment})`
+            background: `url(${appointment})`,
+            backgroundSize: "contain bg-no-repeat",
         }}>
             <div className="hero">
                 <div className="hero-content flex-col lg:flex-row">

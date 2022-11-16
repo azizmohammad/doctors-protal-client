@@ -5,7 +5,8 @@ import bg from '../../../../assets/images/bg.png'
 const Banner = () => {
     return (
         <section style={{
-            background: `url(${bg})`
+            background: `url(${bg})`,
+            backgroundSize: "contain bg-no-repeat",
         }}>
             <div className="hero min-h-screen mt-10 ">
                 <div className=" bg-opacity-70 rounded-xl"></div>
