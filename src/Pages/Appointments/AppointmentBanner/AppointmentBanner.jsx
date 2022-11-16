@@ -1,18 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import chire from '../../../assets/images/chair.png';
 import bgimg from '../../../assets/images/bg.png';
 import { DayPicker } from 'react-day-picker';
 
-import { format } from 'date-fns';
+const AppointmentBanner = ({ selectedDate, setSelectedDate }) => {
 
 
-const AppointmentBanner = () => {
-    const [selectedDate, setSelectedDate] = useState(new Date());
-
-    let footer = <p>Please pick a day.</p>;
-    if (selectedDate) {
-        footer = <p className='text-secondary font-bold'>You Have Selected Date {format(selectedDate, 'PP')}.</p>;
-    }
     return (
         <header className='py-20' style={{
             background: `url(${bgimg})`,
@@ -27,7 +20,7 @@ const AppointmentBanner = () => {
                             mode="single"
                             selected={selectedDate}
                             onSelect={setSelectedDate}
-                            footer={footer}
+                        // footer={footer}
                         ></DayPicker>
                     </div>
                 </div>
