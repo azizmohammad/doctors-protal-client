@@ -11,6 +11,7 @@ const SingleAppoinment = ({ option, setTreatment }) => {
                     <p>{slots.length} {slots.length > 1 ? 'Spaces' : 'Space'} </p>
                     <div className="card-actions justify-center">
                         <label
+                            disabled={slots.length === 0}
                             onClick={() => setTreatment(option)}
                             htmlFor="booking-modal" className="btn btn-primary bg-gradient-to-r from-primary to-secondary text-white">Book Appointment</label>
                     </div>
