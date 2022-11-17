@@ -1,16 +1,56 @@
-import React from 'react';
+import { GoogleAuthProvider } from 'firebase/auth';
+import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../context/AuthContext';
 
 
 
 const SingUp = () => {
 
     const { register, formState: { errors }, handleSubmit } = useForm();
+    const { createUser, googleLogin, updateUserProfile } = useContext(AuthContext);
+    const googleAuthProvider = new GoogleAuthProvider();
+
+    // navigate
+    const navigate = useNavigate();
 
     const handleSingUp = (data) => {
         console.log(data);
+        createUser(data.email, data.password, data.name)
+            .then(result => {
+                const user = result.user;
+                console.log(user);
+                handleUpdateUserProfile();
+                navigate('/login');
+            })
+            .catch(err => console.log(err))
     }
+
+    // user profile update
+    const handleUpdateUserProfile = (name, photoURL) => {
+        const profile = {
+            displayName: name,
+            // photoURL: photoURL,
+        }
+        updateUserProfile(profile)
+            .then(() => {
+                // Profile updated!
+            }).catch((error) => {
+                console.log(error);
+            });
+    }
+
+    // google login
+    const handleGoogleSingIn = () => {
+        googleLogin(googleAuthProvider)
+            .then(result => {
+                const user = result.user;
+                console.log(user);
+            })
+            .catch(error => console.log('error', error.message))
+    }
+
 
     return (
         <div className='h-[700px] flex justify-center items-center'>
@@ -44,8 +84,8 @@ const SingUp = () => {
                         <input type="password"{...register("password",
                             {
                                 required: "Password is required",
-                                // pattern: { value: /(?=.*[A-Z])(?=.*[!@#$&*+=])(?=.*[0-9])/, message: 'Password must have uppercase, number and special characters' },
-                                minLength: { value: 6, message: "Password Must be 6 Characters" }
+                                minLength: { value: 6, message: "Password Must be 6 Characters" },
+                                // pattern: { value: /(?=.*[A-Z])(?=.*[!@#$&*+=])(?=.*[0-9])/, message: 'Password must have uppercase, number and special characters' }
                             })}
                             className="input input-bordered w-full" />
                         {errors.password && <p className='text-red-600'>{errors.password?.message}</p>}
@@ -55,7 +95,7 @@ const SingUp = () => {
                 </form>
                 <p className='mt-5 text-neutral text-center'>Please Login? <Link to='/login' className='text-secondary font-semibold'> Already Have an Account</Link> </p>
                 <div className="divider font-semibold">OR</div>
-                <button className="btn btn-outline bg-secondary border-0 text-white w-full mt-4">CONTINUE WITH GOOGLE</button>
+                <button onClick={handleGoogleSingIn} className="btn btn-outline bg-secondary border-0 text-white w-full mt-4">CONTINUE WITH GOOGLE</button>
             </div>
         </div>
     );

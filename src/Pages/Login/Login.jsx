@@ -1,13 +1,50 @@
-import React from 'react';
+import { GoogleAuthProvider } from 'firebase/auth';
+import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../context/AuthContext';
 
 
 const Login = () => {
     const { register, formState: { errors }, handleSubmit } = useForm();
+    const { signIn, googleLogin, setLoading } = useContext(AuthContext);
+    const googleAuthProvider = new GoogleAuthProvider();
+
+    // login location sytem
+    const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from?.pathname || '/';
 
     const handleLogin = (data) => {
         console.log(data);
+
+        signIn(data.email, data.password)
+            .then(result => {
+                const user = result.user;
+                console.log(user);
+                if (user) {
+                    navigate(from, { replace: true });
+                }
+                else {
+                    toast.error('Your Email Not Verify ')
+                }
+            })
+            .catch(err => console.log(err))
+            .finally(() => {
+                setLoading(false);
+            })
+    }
+
+
+    // google login
+    const handleGoogleSingIn = () => {
+        googleLogin(googleAuthProvider)
+            .then(result => {
+                const user = result.user;
+                console.log(user);
+            })
+            .catch(error => console.log('error', error.message))
     }
 
     return (
@@ -44,7 +81,7 @@ const Login = () => {
                 </form>
                 <p className='mt-5 text-neutral text-center'>New to Doctors Portal? <Link to='/singup' className='text-secondary font-semibold'>Create new account</Link> </p>
                 <div className="divider font-semibold">OR</div>
-                <button className="btn btn-outline bg-secondary border-0 text-white w-full mt-4">CONTINUE WITH GOOGLE</button>
+                <button onClick={handleGoogleSingIn} className="btn btn-outline bg-secondary border-0 text-white w-full mt-4">CONTINUE WITH GOOGLE</button>
             </div>
         </div>
     );
