@@ -3,6 +3,7 @@ import Main from "../Layout/Main";
 import Appointment from "../Pages/Appointments/Appointments/Appointment";
 import Home from "../Pages/HomePage/Home/Home";
 import Login from "../Pages/Login/Login";
+import SingUp from "../Pages/SingUp/SingUp";
 
 
 export const router = createBrowserRouter([
@@ -17,6 +18,10 @@ export const router = createBrowserRouter([
             {
                 path: '/login',
                 element: <Login></Login>,
+            },
+            {
+                path: '/singup',
+                element: <SingUp></SingUp>,
             },
             {
                 path: '/appointment',

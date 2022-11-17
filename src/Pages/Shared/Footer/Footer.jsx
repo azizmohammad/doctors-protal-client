@@ -11,7 +11,7 @@ const Footer = () => {
             }}
             className="p-10 ">
 
-            <div className='footer'>
+            <div className='footer flex justify-around flex-col md:flex-row-reverse'>
                 <div>
                     <span className="font-bold text-xl text-neutral">Services</span>
                     <Link className="link link-hover">Emergency Checkup</Link>
