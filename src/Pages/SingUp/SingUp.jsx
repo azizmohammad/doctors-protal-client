@@ -1,6 +1,7 @@
 import { GoogleAuthProvider } from 'firebase/auth';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 
@@ -9,37 +10,62 @@ import { AuthContext } from '../../context/AuthContext';
 const SingUp = () => {
 
     const { register, formState: { errors }, handleSubmit } = useForm();
-    const { createUser, googleLogin, updateUserProfile } = useContext(AuthContext);
+    const { createUser, googleLogin, emailVerifiy, updateUserProfile } = useContext(AuthContext);
     const googleAuthProvider = new GoogleAuthProvider();
 
+    // error state set
+    const [error, setError] = useState('');
     // navigate
     const navigate = useNavigate();
 
     const handleSingUp = (data) => {
         console.log(data);
+        // setError('');
         createUser(data.email, data.password, data.name)
             .then(result => {
                 const user = result.user;
                 console.log(user);
-                handleUpdateUserProfile();
-                navigate('/login');
+                // navigate('/login');
+                toast.success('Verify Your Email Address')
+                const userInfo = {
+                    displayName: data.name
+                }
+                updateUserProfile(userInfo)
+                    .then(() => {
+                        saveUser(data.name, data.email);
+                    }).catch((error) => {
+                        console.log(error);
+                    });
+                emailVerifiy()
+                    .then(() => {
+                        // Email verification sent!
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
             })
-            .catch(err => console.log(err))
+            .catch(err => {
+                console.log(err);
+                setError(err.message);
+            })
     }
 
-    // user profile update
-    const handleUpdateUserProfile = (name, photoURL) => {
-        const profile = {
-            displayName: name,
-            // photoURL: photoURL,
-        }
-        updateUserProfile(profile)
-            .then(() => {
-                // Profile updated!
-            }).catch((error) => {
-                console.log(error);
-            });
+    const saveUser = (name, email) => {
+        const user = { name, email };
+        fetch('http://localhost:5000/users', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(user)
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+                navigate('/');
+            })
     }
+
 
     // google login
     const handleGoogleSingIn = () => {
@@ -90,6 +116,7 @@ const SingUp = () => {
                             className="input input-bordered w-full" />
                         {errors.password && <p className='text-red-600'>{errors.password?.message}</p>}
                     </div>
+                    <p className='text-red-600'> {error} </p>
 
                     <input className='btn mt-8 w-full bg-neutral text-white' value="Sing Up" type="submit" />
                 </form>

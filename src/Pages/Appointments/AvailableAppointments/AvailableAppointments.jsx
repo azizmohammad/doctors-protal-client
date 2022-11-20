@@ -1,17 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import SingleAppoinment from './SingleAppoinment';
 import BookingModal from '../BookingModal/BookingModal';
 import { format } from 'date-fns';
+import { useQuery } from '@tanstack/react-query';
+import Loading from '../../Shared/Loading/Loading';
 
 const AvailableAppointments = ({ selectedDate }) => {
-    const [appointment, setAppointment] = useState([]);
-    const [treatment, setTreatment] = useState(null);
 
-    useEffect(() => {
-        fetch('services.json')
+    const [treatment, setTreatment] = useState(null);
+    const date = format(selectedDate, 'PP');
+
+    const { data: appointment = [], refetch, isLoading } = useQuery({
+        queryKey: ['appoinmentoption'],
+        queryFn: () => fetch(`http://localhost:5000/appoinmentoption?date=${date}`)
             .then(res => res.json())
-            .then(data => setAppointment(data))
-    }, [])
+    })
+
+    if (isLoading) {
+        return <Loading></Loading>
+    }
 
     return (
         <section className='mt-20'>
@@ -32,6 +39,7 @@ const AvailableAppointments = ({ selectedDate }) => {
                     treatment={treatment}
                     selectedDate={selectedDate}
                     setTreatment={setTreatment}
+                    refetch={refetch}
                 ></BookingModal>
             }
         </section>

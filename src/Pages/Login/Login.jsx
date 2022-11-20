@@ -1,5 +1,5 @@
 import { GoogleAuthProvider } from 'firebase/auth';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -11,6 +11,8 @@ const Login = () => {
     const { signIn, googleLogin, setLoading } = useContext(AuthContext);
     const googleAuthProvider = new GoogleAuthProvider();
 
+    // error state set
+    const [error, setError] = useState('');
     // login location sytem
     const navigate = useNavigate();
     const location = useLocation();
@@ -18,7 +20,7 @@ const Login = () => {
 
     const handleLogin = (data) => {
         console.log(data);
-
+        setError('');
         signIn(data.email, data.password)
             .then(result => {
                 const user = result.user;
@@ -27,10 +29,13 @@ const Login = () => {
                     navigate(from, { replace: true });
                 }
                 else {
-                    toast.error('Your Email Not Verify ')
+                    toast.error('Your Email Not Verify ');
                 }
             })
-            .catch(err => console.log(err))
+            .catch(err => {
+                console.log(err);
+                setError(err.message);
+            })
             .finally(() => {
                 setLoading(false);
             })
@@ -76,6 +81,7 @@ const Login = () => {
                         {errors.password && <p className='text-red-600'>{errors.password?.message}</p>}
                     </div>
                     <Link className="label-text-alt link link-hover">Forgot password?</Link>
+                    <p className='text-red-600'> {error} </p>
 
                     <input className='btn mt-8 w-full bg-neutral text-white' value="Login" type="submit" />
                 </form>

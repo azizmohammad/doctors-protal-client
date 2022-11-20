@@ -1,6 +1,8 @@
 import React, { useContext } from 'react';
+import { BallTriangle } from 'react-loader-spinner';
 import { Navigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
+import SendEmailVerification from '../../Pages/VerifyEmail/VerifyEmail';
 
 const PrivateRoutes = ({ children }) => {
 
@@ -8,14 +10,30 @@ const PrivateRoutes = ({ children }) => {
     const location = useLocation();
 
     if (loading) {
-        return <progress className="progress w-56"></progress>
+        return <div className='flex justify-center items-center h-screen'>
+            <BallTriangle
+                height={100}
+                width={100}
+                radius={5}
+                color="#4fa94d"
+                ariaLabel="ball-triangle-loading"
+                wrapperClass={{}}
+                wrapperStyle=""
+                visible={true}
+
+            />
+        </div>
     }
 
-    if (user) {
-        return children;
+    if (!user) {
+        return <Navigate to="/login" state={{ from: location }} replace></Navigate>;
     }
+    if (!user.emailVerified) {
+        return <SendEmailVerification />
+    }
+    return children;
 
-    return <Navigate to="/login" state={{ from: location }} replace></Navigate>;
+
 };
 
 export default PrivateRoutes;
