@@ -11,10 +11,11 @@ const Navbar = () => {
 
     const handelLogOut = () => {
         logOut()
-            .then(() => { })
+            .then(() => {
+                setIsDawer(false)
+            })
             .catch(error => console.log(error))
     }
-
 
     const menuItem = <React.Fragment>
 

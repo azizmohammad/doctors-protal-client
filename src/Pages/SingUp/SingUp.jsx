@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
+import useToken from '../../hooks/useToken';
 
 
 
@@ -13,10 +14,17 @@ const SingUp = () => {
     const { createUser, googleLogin, emailVerifiy, updateUserProfile } = useContext(AuthContext);
     const googleAuthProvider = new GoogleAuthProvider();
 
+    const [createUserEmail, setCreateUserEmail] = useState('')
+    // custom hooks
+    const [token] = useToken(createUserEmail);
     // error state set
     const [error, setError] = useState('');
+
     // navigate
     const navigate = useNavigate();
+    if (token) {
+        navigate('/')
+    }
 
     const handleSingUp = (data) => {
         console.log(data);
@@ -61,10 +69,11 @@ const SingUp = () => {
         })
             .then(res => res.json())
             .then(data => {
-                console.log(data);
-                navigate('/');
+                setCreateUserEmail(email);
             })
     }
+
+
 
 
     // google login

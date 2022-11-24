@@ -10,7 +10,11 @@ const MyAppoinment = () => {
 
         queryKey: ['bookings', user?.email],
         queryFn: async () => {
-            const res = await fetch(url);
+            const res = await fetch(url, {
+                headers: {
+                    authorization: `bearer ${localStorage.getItem('accessToken')}`
+                }
+            });
             const data = await res.json();
             return data;
         }
@@ -18,7 +22,7 @@ const MyAppoinment = () => {
 
     return (
         <div className=''>
-            <h2 className="text-3xl text-neutral mb-6">My Appointment</h2>
+            <h2 className="text-3xl text-neutral mb-6 font-semibold">My Appointment</h2>
             <div className="overflow-x-auto">
                 <table className="table w-full">
 

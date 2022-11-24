@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
+import useToken from '../../hooks/useToken';
 
 
 const Login = () => {
@@ -13,10 +14,16 @@ const Login = () => {
 
     // error state set
     const [error, setError] = useState('');
+    const [loginUserEmail, setLoginUserEmail] = useState('');
+    const [token] = useToken(loginUserEmail)
     // login location sytem
     const navigate = useNavigate();
     const location = useLocation();
     const from = location.state?.from?.pathname || '/';
+
+    if (token) {
+        navigate(from, { replace: true });
+    }
 
     const handleLogin = (data) => {
         console.log(data);
@@ -25,12 +32,8 @@ const Login = () => {
             .then(result => {
                 const user = result.user;
                 console.log(user);
-                if (user) {
-                    navigate(from, { replace: true });
-                }
-                else {
-                    toast.error('Your Email Not Verify ');
-                }
+                setLoginUserEmail(data.email)
+
             })
             .catch(err => {
                 console.log(err);
